@@ -31,12 +31,12 @@ int main() {
     utilities::get_png_image_from_matrix(blurred_noisy_image_matrix, "blurred_noisy_deer.png");
 
     // Ex 6:
-    //Eigen::MatrixXd Hsh1(3, 3);
-    //Hsh1 << 0, -3, 0,
-    //     -1, 9, -3,
-    //     0, -1, 0;
-    //Eigen::SparseMatrix<double> Anit = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
-    //std::cout << "Elementi non zero: " << Anit.nonZeros() << std::endl;
+    Eigen::MatrixXd Hsh1(3, 3);
+    Hsh1 << 0, -3, 0,
+         -1, 9, -3,
+         0, -1, 0;
+    Eigen::SparseMatrix<double> Anit = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
+    std::cout << "Elementi non zero: " << Anit.nonZeros() << std::endl;
 
     // Ex 7:
 
