@@ -35,8 +35,20 @@ int main() {
     Hsh1 << 0, -3, 0,
          -1, 9, -3,
          0, -1, 0;
-    Eigen::SparseMatrix<double> Anit = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
-    std::cout << "Elementi non zero: " << Anit.nonZeros() << std::endl;
+    Eigen::SparseMatrix<double> Ash1 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
+    std::cout << "Elementi non zero: " << Ash1.nonZeros() << std::endl;
+    Eigen::SparseMatrix<double> Ash1_t = Ash1.transpose();
+
+    Eigen::SparseMatrix<double> diff = Ash1_t - Ash1;
+    if (diff.norm() < 1e-12)
+    {
+        std::cout << "Ash1 is symmetric" << std::endl;
+    }
+    else
+    {
+        std::cout << "Ash1 is not symmetric" << std::endl;
+    }
+
 
     // Ex 7:
 
