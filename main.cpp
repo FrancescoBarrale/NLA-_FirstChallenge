@@ -10,8 +10,10 @@ int main() {
     utilities::get_png_image_from_matrix(noisy_image, "noisy_deer.png");
 
     // Ex 3:
-    Eigen::VectorXi image_vector = utilities::convert_matrix_to_vector(noisy_image);
+    Eigen::VectorXi image_vector = utilities::convert_matrix_to_vector(image);
     Eigen::VectorXi noisy_image_vector = utilities::convert_matrix_to_vector(noisy_image);
+    std::cout << "image_vector has " << image_vector.size() << " components" << " = " << image.rows() * image.cols() << std::endl;
+    std::cout << "noisy_image_vector has " << noisy_image_vector.size() << " components" << " = " << noisy_image.rows() * noisy_image.cols() << std::endl;
     std::cout << "Image vector euclidean norm: " << image_vector.norm() << std::endl;
 
     // Ex 4:
