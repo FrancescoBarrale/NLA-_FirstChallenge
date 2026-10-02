@@ -26,8 +26,8 @@ int main() {
     std::cout << "Elementi non zero: " << A.nonZeros() << std::endl;
 
     // Ex 5:
-    Eigen::VectorXd Blurred_noise_image = A * image_vector.cast<double>();
-    Eigen::MatrixXd blurred_noisy_image_matrix = utilities::convert_vector_to_matrix(Blurred_noise_image, image.rows(), image.cols());
+    Eigen::VectorXd Blurred_noisy_image = A * noisy_image_vector;
+    Eigen::MatrixXd blurred_noisy_image_matrix = utilities::convert_vector_to_matrix(Blurred_noisy_image, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(blurred_noisy_image_matrix, "blurred_noisy_deer.png");
 
     // Ex 6:
@@ -49,8 +49,10 @@ int main() {
         std::cout << "Ash1 is not symmetric" << std::endl;
     }
 
-
     // Ex 7:
+    Eigen::VectorXd nitid_image = Ash1 * image_vector;
+    Eigen::MatrixXd nitid_image_matrix = utilities::convert_vector_to_matrix(nitid_image, image.rows(), image.cols());
+    utilities::get_png_image_from_matrix(nitid_image_matrix, "nitid_deer.png");
 
     // Ex 8:
 
