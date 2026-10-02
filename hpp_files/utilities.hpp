@@ -2,6 +2,8 @@
 #define UTILITIES_HPP
 
 #include <iostream>
+#include <eigen3/Eigen/Dense>
+
 
 namespace utilities
 {
