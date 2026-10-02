@@ -5,7 +5,6 @@
 
 namespace utilities
 {
-    // Ex 1:
     Eigen::MatrixXi get_matrix_from_file(const std::string& filename)
     {
         int width;
@@ -40,7 +39,6 @@ namespace utilities
         return matrix;
     }
 
-    // Ex 2:
     Eigen::MatrixXi add_noise_to_matrix(const Eigen::MatrixXi& matrix, int noise_level)
     {
         static std::random_device seed;
@@ -77,7 +75,6 @@ namespace utilities
         delete[] image;
     }
 
-    // Ex 3:
     Eigen::VectorXi convert_matrix_to_vector(const Eigen::MatrixXi& matrix)
     {
         Eigen::VectorXi vector(matrix.size());
