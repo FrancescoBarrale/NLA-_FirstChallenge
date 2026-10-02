@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#include <algorithm>
 
 namespace utilities
 {
@@ -49,7 +50,8 @@ namespace utilities
         {
             for (int j = 0; j < noisy_matrix.cols(); ++j)
             {   
-                noisy_matrix(i, j) += distribution(generator);
+                int noisy_value = noisy_matrix(i, j) + distribution(generator);
+                noisy_matrix(i, j) = std::clamp(noisy_value, 0, 255);
             }
         }
         return noisy_matrix;
