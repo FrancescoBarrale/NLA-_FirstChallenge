@@ -18,6 +18,9 @@ namespace utilities
     Eigen::MatrixXi add_noise_to_matrix(const Eigen::MatrixXi& matrix, int noise_level);
     void get_png_image_from_matrix(const Eigen::MatrixXi& matrix, const std::string& filename);
 
+    // Ex 3:
+    Eigen::VectorXi convert_matrix_to_vector(const Eigen::MatrixXi& matrix);
+
 
 }
 

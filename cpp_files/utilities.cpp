@@ -57,7 +57,6 @@ namespace utilities
         return noisy_matrix;
     }
 
-    // Ex 3:
     void get_png_image_from_matrix(const Eigen::MatrixXi& matrix, const std::string& filename)
     {
         int width = matrix.cols();
@@ -74,5 +73,19 @@ namespace utilities
 
         stbi_write_png(filename.c_str(), width, height, 1, image, width);
         delete[] image;
+    }
+
+    // Ex 3:
+    Eigen::VectorXi convert_matrix_to_vector(const Eigen::MatrixXi& matrix)
+    {
+        Eigen::VectorXi vector(matrix.size());
+        for (int i = 0; i < matrix.rows(); ++i)
+        {
+            for (int j = 0; j < matrix.cols(); ++j)
+            {
+                vector(i * matrix.cols() + j) = matrix(i, j);
+            }
+        }
+        return vector;
     }
 }
