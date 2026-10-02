@@ -4,6 +4,7 @@
 #include <iostream>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Sparse>
+#include <unsupported/Eigen/SparseExtra>
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <random>

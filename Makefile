@@ -1,4 +1,4 @@
-CXX       ?= g++
+CXX       := mpicxx
 TARGET    := main
 BUILD_DIR := build
 
@@ -9,13 +9,19 @@ OBJECTS   := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
 DEPENDS   := $(OBJECTS:.o=.d)
 
 CPPFLAGS  := $(addprefix -I,$(INC_DIRS))
+CPPFLAGS  += -DUSE_MPI -I$(mkLisInc)
 CXXFLAGS  ?= -std=c++17 -Wall -Wextra -pedantic
-LDFLAGS   ?=
-LDLIBS    ?=
+LDFLAGS   += -L$(mkLisLib)
+LDLIBS    += -llis
 
-.PHONY: all clean run debug release
+.PHONY: all lis-build build-with-lis clean run debug release
 
-all: $(TARGET)
+all: lis-build
+
+lis-build:
+	bash -lc 'source /u/sw/etc/bash.bashrc && module load gcc-glibc && module load lis && $(MAKE) build-with-lis'
+
+build-with-lis: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
