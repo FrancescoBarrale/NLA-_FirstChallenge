@@ -5,7 +5,7 @@
 
 namespace utilities
 {
-    Eigen::MatrixXi get_matrix_from_file(const std::string& filename)
+    Eigen::MatrixXd get_matrix_from_file(const std::string& filename)
     {
         int width;
         int height;
@@ -22,11 +22,11 @@ namespace utilities
         if (!image)
         {
             std::cerr << "Error: " << stbi_failure_reason() << std::endl;
-            return Eigen::MatrixXi();
+            return Eigen::MatrixXd();
         }
 
         // Create an Eigen matrix from the loaded image
-        Eigen::MatrixXi matrix(height, width);
+        Eigen::MatrixXd matrix(height, width);
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
@@ -39,12 +39,12 @@ namespace utilities
         return matrix;
     }
 
-    Eigen::MatrixXi add_noise_to_matrix(const Eigen::MatrixXi& matrix, int noise_level)
+    Eigen::MatrixXd add_noise_to_matrix(const Eigen::MatrixXd& matrix, int noise_level)
     {
         static std::random_device seed;
         static std::mt19937 generator(seed());
         std::uniform_int_distribution<int> distribution(-noise_level, noise_level);
-        Eigen::MatrixXi noisy_matrix = matrix;
+        Eigen::MatrixXd noisy_matrix = matrix;
 
         for (int i = 0; i < noisy_matrix.rows(); ++i)
         {
@@ -57,7 +57,7 @@ namespace utilities
         return noisy_matrix;
     }
 
-    void get_png_image_from_matrix(const Eigen::MatrixXi& matrix, const std::string& filename)
+    void get_png_image_from_matrix(const Eigen::MatrixXd& matrix, const std::string& filename)
     {
         int width = matrix.cols();
         int height = matrix.rows();
@@ -75,9 +75,9 @@ namespace utilities
         delete[] image;
     }
 
-    Eigen::VectorXi convert_matrix_to_vector(const Eigen::MatrixXi& matrix)
+    Eigen::VectorXd convert_matrix_to_vector(const Eigen::MatrixXd& matrix)
     {
-        Eigen::VectorXi vector(matrix.size());
+        Eigen::VectorXd vector(matrix.size());
         for (int i = 0; i < matrix.rows(); ++i)
         {
             for (int j = 0; j < matrix.cols(); ++j)
@@ -86,5 +86,60 @@ namespace utilities
             }
         }
         return vector;
+    }
+
+    Eigen::MatrixXd convert_vector_to_matrix(const Eigen::VectorXd& vector, int rows, int cols)
+    {
+        if (vector.size() != rows * cols)
+        {
+            std::cerr << "Error: Vector size does not match the specified matrix dimensions." << std::endl;
+            return Eigen::MatrixXd(); // Return an empty matrix if dimensions do not match
+        }
+
+        Eigen::MatrixXd matrix(rows, cols);
+        for (int i = 0; i < rows; ++i)
+        {
+            for (int j = 0; j < cols; ++j)
+            {
+                matrix(i, j) = vector(i * cols + j);
+            }
+        }
+        return matrix;
+    }
+
+    Eigen::SparseMatrix<double> buildAconvolutionoperator(int n, int m, Eigen::MatrixXd H)
+    {
+        if (H.rows() != H.cols())
+        {
+            std::cerr << "Error: H must be a square matrix." << std::endl;
+            return Eigen::SparseMatrix<double>(); // Return zero matrix if H is not square
+        }
+        
+        Eigen::SparseMatrix<double> A(n*m, n*m);
+        std::vector<Eigen::Triplet<double>> tripletList;
+
+        int l=H.rows();
+        tripletList.reserve(n * m * l * l);
+
+        for (int i = 0; i < n ; ++i)
+        {
+            for (int j = 0; j< m; ++j)
+            {
+                for (int h = 0; h < l; ++h)
+                {   
+                    for (int k = 0; k < l; ++k)
+                    {
+                        int row_H = i + h - l/2;
+                        int col_H = j + k - l/2;
+                        if (row_H >= 0 && row_H < n && col_H >= 0 && col_H < m){
+
+                            tripletList.push_back(Eigen::Triplet<double>(row_H*m + col_H, i*m + j, H(h, k)));
+                        }
+                    }
+                }
+            }
+        }
+        A.setFromTriplets(tripletList.begin(), tripletList.end());
+        return A;
     }
 }

@@ -4,23 +4,39 @@
 int main() {
     
     // Ex 1:
-    Eigen::MatrixXi image = utilities::get_matrix_from_file("deer.jpg");
+    Eigen::MatrixXd image = utilities::get_matrix_from_file("deer.jpg");
     // Ex 2:
-    Eigen::MatrixXi noisy_image = utilities::add_noise_to_matrix(image, 50);
+    Eigen::MatrixXd noisy_image = utilities::add_noise_to_matrix(image, 50);
     utilities::get_png_image_from_matrix(noisy_image, "noisy_deer.png");
 
     // Ex 3:
-    Eigen::VectorXi image_vector = utilities::convert_matrix_to_vector(image);
-    Eigen::VectorXi noisy_image_vector = utilities::convert_matrix_to_vector(noisy_image);
+    Eigen::VectorXd image_vector = utilities::convert_matrix_to_vector(image.cast<double>());
+    Eigen::VectorXd noisy_image_vector = utilities::convert_matrix_to_vector(noisy_image.cast<double>());
     std::cout << "image_vector has " << image_vector.size() << " components" << " = " << image.rows() * image.cols() << std::endl;
     std::cout << "noisy_image_vector has " << noisy_image_vector.size() << " components" << " = " << noisy_image.rows() * noisy_image.cols() << std::endl;
     std::cout << "Image vector euclidean norm: " << image_vector.norm() << std::endl;
 
     // Ex 4:
+    Eigen::MatrixXd H(3, 3);
+    H << 1./12., 1./12., 1./12.,
+         1./12., 4./12., 1./12.,
+         1./12., 1./12., 1./12.;
+
+    Eigen::SparseMatrix<double> A = utilities::buildAconvolutionoperator(image.rows(), image.cols(), H);
+    std::cout << "Elementi non zero: " << A.nonZeros() << std::endl;
 
     // Ex 5:
+    Eigen::VectorXd Blurred_noise_image = A * image_vector.cast<double>();
+    Eigen::MatrixXd blurred_noisy_image_matrix = utilities::convert_vector_to_matrix(Blurred_noise_image, image.rows(), image.cols());
+    utilities::get_png_image_from_matrix(blurred_noisy_image_matrix, "blurred_noisy_deer.png");
 
     // Ex 6:
+    //Eigen::MatrixXd Hsh1(3, 3);
+    //Hsh1 << 0, -3, 0,
+    //     -1, 9, -3,
+    //     0, -1, 0;
+    //Eigen::SparseMatrix<double> Anit = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
+    //std::cout << "Elementi non zero: " << Anit.nonZeros() << std::endl;
 
     // Ex 7:
 
