@@ -131,7 +131,9 @@ namespace utilities
                     {
                         int row_H = i + h - l/2;
                         int col_H = j + k - l/2;
-                        if (row_H >= 0 && row_H < n && col_H >= 0 && col_H < m){
+                        if (row_H >= 0 && row_H < n &&
+                            col_H >= 0 && col_H < m &&
+                            H(h, k) != 0.0){
 
                             tripletList.push_back(Eigen::Triplet<double>(row_H*m + col_H, i*m + j, H(h, k)));
                         }
@@ -141,5 +143,15 @@ namespace utilities
         }
         A.setFromTriplets(tripletList.begin(), tripletList.end());
         return A;
+    }
+
+    Eigen::VectorXd clamp_image(Eigen::VectorXd& image_vector, int min_value, int max_value)
+    {
+        Eigen::VectorXd clamped_vector = image_vector;
+        for (int i = 0; i < clamped_vector.size(); ++i)
+        {
+            clamped_vector(i) = std::clamp(clamped_vector(i), static_cast<double>(min_value), static_cast<double>(max_value));
+        }
+        return clamped_vector;
     }
 }

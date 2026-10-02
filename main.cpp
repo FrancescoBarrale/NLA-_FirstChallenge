@@ -50,9 +50,10 @@ int main() {
     }
 
     // Ex 7:
-    Eigen::VectorXd nitid_image = Ash1 * image_vector;
-    Eigen::MatrixXd nitid_image_matrix = utilities::convert_vector_to_matrix(nitid_image, image.rows(), image.cols());
-    utilities::get_png_image_from_matrix(nitid_image_matrix, "nitid_deer.png");
+    Eigen::VectorXd sharpened_image = Ash1 * image_vector;
+    sharpened_image = utilities::clamp_image(sharpened_image, 0, 255);
+    Eigen::MatrixXd sharpened_image_matrix = utilities::convert_vector_to_matrix(sharpened_image, image.rows(), image.cols());
+    utilities::get_png_image_from_matrix(sharpened_image_matrix, "sharpened_deer.png");
 
     // Ex 8:
 
