@@ -58,13 +58,15 @@ int main(int argc, char** argv) {
     utilities::get_png_image_from_matrix(sharpened_image_matrix, "sharpened_deer.png");
 
     // Ex 8: continues 
+    Eigen::saveMarket(A2, "A2.mtx");
+    Eigen::saveMarketVector(w, "w.mtx");
     constexpr double tolerance = 1.0e-12;
 
     lis_solver::Result result = lis_solver::solve(A2, w, tolerance);
 
-    std::cout << "Tolerance: " << tolerance << '\n';
-    std::cout << "Iterations: " << result.iterations << '\n';
-    std::cout << "Lis Residual: " << result.residual << '\n';
+    std::cout << "Tolerance: " << tolerance << std::endl;
+    std::cout << "Iterations: " << result.iterations << std::endl;
+    std::cout << "Lis Residual: " << result.residual << std::endl;
 
     lis_finalize();
     
@@ -72,12 +74,27 @@ int main(int argc, char** argv) {
     Eigen::VectorXd x = result.solution;
     Eigen::VectorXd x_clamped = utilities::clamp_image(x, 0, 255);
     Eigen::MatrixXd x_image_1 = utilities::convert_vector_to_matrix(x_clamped, image.rows(), image.cols());
-    utilities::get_png_image_from_matrix(x_image_1, "x_image_1.png");
+    utilities::get_png_image_from_matrix(x_image_1, "sharpened_noisy_deer_x1.png");
 
 
     // Ex 10:
+    Eigen::MatrixXd Hed2(3, 3);
+    Hed2 << -1. ,0.,1.,
+            -2. ,0.,2.,
+            -1. ,0.,1.;
+
+    Eigen::SparseMatrix<double> A3 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hed2);
+    if (utilities::is_symmetric(A3)) {
+        std::cout << "A3 is symmetric." << std::endl;
+    } else {
+        std::cout << "A3 is not symmetric." << std::endl;
+    }
 
     // Ex 11:
+    Eigen::VectorXd Edge_detection_image = A3 * v;
+    Edge_detection_image = utilities::clamp_image(Edge_detection_image, 0, 255);
+    Eigen::MatrixXd Edge_detection_image_matrix = utilities::convert_vector_to_matrix(Edge_detection_image, image.rows(), image.cols());
+    utilities::get_png_image_from_matrix(Edge_detection_image_matrix, "Edge_detection_deer.png");
 
     // Ex 12:
 
