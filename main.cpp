@@ -68,14 +68,11 @@ int main(int argc, char** argv) {
     std::cout << "Iterations: " << result.iterations << std::endl;
     std::cout << "Lis Residual: " << result.residual << std::endl;
 
-    lis_finalize();
-    
     // Ex 9:
     Eigen::VectorXd x = result.solution;
     Eigen::VectorXd x_clamped = utilities::clamp_image(x, 0, 255);
     Eigen::MatrixXd x_image_1 = utilities::convert_vector_to_matrix(x_clamped, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(x_image_1, "sharpened_noisy_deer_x1.png");
-
 
     // Ex 10:
     Eigen::MatrixXd Hed2(3, 3);
@@ -97,6 +94,22 @@ int main(int argc, char** argv) {
     utilities::get_png_image_from_matrix(Edge_detection_image_matrix, "Edge_detection_deer.png");
 
     // Ex 12:
+    Eigen::SparseMatrix<double> A_new = 4 * Eigen::SparseMatrix<double>(image.rows() * image.cols(), image.rows() * image.cols()) + A3;
+    A_new.makeCompressed();
+    if (utilities::is_symmetric(A_new)) {
+        std::cout << "A_new is symmetric." << std::endl;
+    } else {
+        std::cout << "A_new is not symmetric." << std::endl;
+    } //check if symmetric cause maybe can use better solver, but in this case is not symmetric so we use gmres
+    constexpr double tolerance2 = 1.0e-10;
+
+    lis_solver::Result result2 = lis_solver::solve(A_new, w, tolerance2);
+
+    std::cout << "Tolerance: " << tolerance2 << std::endl;
+    std::cout << "Iterations: " << result2.iterations << std::endl;
+    std::cout << "Lis Residual: " << result2.residual << std::endl;
+
+    lis_finalize();
 
     // Ex 13:
 
