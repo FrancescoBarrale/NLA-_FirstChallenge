@@ -94,7 +94,10 @@ int main(int argc, char** argv) {
     utilities::get_png_image_from_matrix(Edge_detection_image_matrix, "Edge_detection_deer.png");
 
     // Ex 12:
-    Eigen::SparseMatrix<double> A_new = 4 * Eigen::SparseMatrix<double>(image.rows() * image.cols(), image.rows() * image.cols()) + A3;
+    const Eigen::Index system_size = image.rows() * image.cols();
+    Eigen::SparseMatrix<double> identity(system_size, system_size);
+    identity.setIdentity();
+    Eigen::SparseMatrix<double> A_new = 4.0 * identity + A3;
     A_new.makeCompressed();
     if (utilities::is_symmetric(A_new)) {
         std::cout << "A_new is symmetric." << std::endl;
@@ -112,6 +115,10 @@ int main(int argc, char** argv) {
     lis_finalize();
 
     // Ex 13:
+    Eigen::VectorXd y = result2.solution;
+    Eigen::VectorXd y_clamped = utilities::clamp_image(y, 0, 255);
+    Eigen::MatrixXd y_image_1 = utilities::convert_vector_to_matrix(y_clamped, image.rows(), image.cols());
+    utilities::get_png_image_from_matrix(y_image_1, "y1.png");
 
     return 0;
 }

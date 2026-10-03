@@ -1,6 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "utilities.hpp"
+#include <filesystem>
 
 
 namespace utilities
@@ -71,7 +72,15 @@ namespace utilities
             }
         }
 
-        stbi_write_png(filename.c_str(), width, height, 1, image, width);
+        const std::filesystem::path output_directory = "png_files";
+        std::filesystem::create_directories(output_directory);
+        const std::filesystem::path output_path = output_directory / filename;
+
+        if (stbi_write_png(output_path.string().c_str(), width, height, 1, image, width) == 0)
+        {
+            std::cerr << "Error: could not write PNG file "
+                      << output_path << std::endl;
+        }
         delete[] image;
     }
 
