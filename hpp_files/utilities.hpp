@@ -2,12 +2,13 @@
 #define UTILITIES_HPP
 
 #include <iostream>
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Sparse>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <unsupported/Eigen/SparseExtra>
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <random>
+#include <algorithm>
 
 
 namespace utilities
@@ -22,6 +23,8 @@ namespace utilities
 
     Eigen::SparseMatrix<double> buildAconvolutionoperator(int n, int m, Eigen::MatrixXd H);
     Eigen::VectorXd clamp_image(Eigen::VectorXd& image_vector, int min_value, int max_value);
+
+    bool is_symmetric(const Eigen::SparseMatrix<double>& m);
 
 
 }

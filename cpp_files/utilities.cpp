@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "utilities.hpp"
-#include <algorithm>
+
 
 namespace utilities
 {
@@ -153,5 +153,14 @@ namespace utilities
             clamped_vector(i) = std::clamp(clamped_vector(i), static_cast<double>(min_value), static_cast<double>(max_value));
         }
         return clamped_vector;
+    }
+
+    bool is_symmetric(const Eigen::SparseMatrix<double>& m)
+    {
+        Eigen::SparseMatrix<double> m_t = m.transpose();
+
+    Eigen::SparseMatrix<double> diff = m_t - m;
+    
+    return diff.norm() < 1e-12;
     }
 }

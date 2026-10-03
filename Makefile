@@ -9,7 +9,8 @@ OBJECTS   := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
 DEPENDS   := $(OBJECTS:.o=.d)
 
 CPPFLAGS  := $(addprefix -I,$(INC_DIRS))
-CPPFLAGS  += -DUSE_MPI -I$(mkLisInc)
+CPPFLAGS  += -DUSE_MPI $(if $(mkLisInc),-I$(mkLisInc))
+CPPFLAGS  += -I$(if $(mkEigenInc),$(mkEigenInc),/usr/include/eigen3)
 CXXFLAGS  ?= -std=c++17 -Wall -Wextra -pedantic
 LDFLAGS   += -L$(mkLisLib)
 LDLIBS    += -llis
