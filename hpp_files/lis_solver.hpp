@@ -35,12 +35,12 @@ namespace lis_solver
         double tolerance
     ) {
         if (A_eigen.rows() != A_eigen.cols()) {
-            throw std::invalid_argument("A deve essere quadrata.");
+            throw std::invalid_argument("A must be a square matrix.");
         }
 
         if (A_eigen.rows() != b_eigen.size()) {
             throw std::invalid_argument(
-                "Le dimensioni di A e b non coincidono."
+                "The dimensions of A and b do not match."
             );
         }
 
