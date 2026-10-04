@@ -149,7 +149,7 @@ namespace utilities
         int l=H.rows();
         tripletList.reserve(n * m * l * l);
 
-        // Loop over each pixel in the image
+        // Loop over each output pixel in the image
         for (int i = 0; i < n ; ++i)
         {
             for (int j = 0; j< m; ++j)
@@ -159,13 +159,21 @@ namespace utilities
                 {   
                     for (int k = 0; k < l; ++k)
                     {
-                        // Calculating the corresponding pixel in the image for the current kernel element
+                        // Calculate the corresponding input pixel for the
+                        // current output pixel and kernel element.
                         int row = i + h - l/2;
                         int col = j + k - l/2;
-                        // Check if the calculated pixel is within the bounds of the image and if the kernel element is non-zero
+                        // Ignore out-of-bounds input pixels, as required by
+                        // the zero-padding convention in the challenge.
                         if (row >= 0 && row < n && col >= 0 && col < m && H(h, k) != 0.0){
-                            // Add the non-zero element to the triplet list. 
-                            tripletList.push_back(Eigen::Triplet<double>(row*m + col, i*m + j, H(h, k)));
+                            // A(output, input) = H(h, k).
+                            tripletList.push_back(
+                                Eigen::Triplet<double>(
+                                    i*m + j,
+                                    row*m + col,
+                                    H(h, k)
+                                )
+                            );
                         }
                     }
                 }
