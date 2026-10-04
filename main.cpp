@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     // Solve the linear system A2 * x = w using the lis_solver::solve function, that we introduced in the lis_solver.hpp file.
     // The function returns a lis_solver::Result struct that contains the solution vector, the number of iterations, and the residual.
     // It was implemented using the LIS library. In this way we can run main.cpp directly without having to compile the LIS library separately using .mtx files.
-    lis_solver::Result result = lis_solver::solve(A2, w, tolerance); //Since A2 is not symmetric, we can use the GMRES method with ILU preconditioner
+    lis_solver::Result result = lis_solver::solve(A2, w, tolerance); //Since A2 is not symmetric, we can use the Bicgstab method with ILU preconditioner
 
     std::cout << "Tolerance of A2x = w: " << tolerance << std::endl;
     std::cout << "Iterations of A2x = w: " << result.iterations << std::endl;
@@ -132,7 +132,8 @@ int main(int argc, char** argv) {
     double tol = 1.e-10;                 // Convergence tolerance
     int maxit = 1000;           // Maximum iterations
 
-    // Solving 
+    // Solving
+    //since A3 is not symmetric and we only modified the diagonal, A_new is also not symmetric
     Eigen::BiCGSTAB<Eigen::SparseMatrix<double>, Eigen::DiagonalPreconditioner<double>> BiCGSTAB; //diag and not ilu cause ilu was not converging for this problem
     BiCGSTAB.setMaxIterations(maxit);
     BiCGSTAB.setTolerance(tol);
