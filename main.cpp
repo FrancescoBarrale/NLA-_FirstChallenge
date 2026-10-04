@@ -109,6 +109,8 @@ int main(int argc, char** argv) {
         std::cout << "A3 is not symmetric." << std::endl << std::endl;
     }
 
+    lis_finalize();
+
     // Ex 11:
     std::cout << "Exercise 11: " << std::endl;
     Eigen::VectorXd Edge_detection_image = A3 * v;
@@ -124,19 +126,23 @@ int main(int argc, char** argv) {
     identity.setIdentity();
     Eigen::SparseMatrix<double> A_new = 4.0 * identity + A3;
     A_new.makeCompressed();
-    constexpr double tolerance2 = 1.0e-10;
 
-    lis_solver::Result result2 = lis_solver::solve(A_new, w, tolerance2); //Since A_new is not symmetric, we can use the GMRES method with ILU preconditioner
+    double tol = 1.e-10;                 // Convergence tolerance
+    int maxit = 1000;           // Maximum iterations
 
-    std::cout << "Tolerance of (4I + A3)y = w: " << tolerance2 << std::endl;
-    std::cout << "Iterations of (4I + A3)y = w: " << result2.iterations << std::endl;
-    std::cout << "Residual of (4I + A3)y = w: " << result2.residual << std::endl << std::endl;
-
-    lis_finalize();
+    // Solving 
+    Eigen::BiCGSTAB<Eigen::SparseMatrix<double>, Eigen::DiagonalPreconditioner<double>> BiCGSTAB; //diag and not ilu cause ilu was not converging for this problem
+    BiCGSTAB.setMaxIterations(maxit);
+    BiCGSTAB.setTolerance(tol);
+    BiCGSTAB.compute(A_new);
+    Eigen::VectorXd y = BiCGSTAB.solve(w);
+    std::cout << "Eigen native BiCGSTAB (A3+4I)y=w" << std::endl;
+    std::cout << "Tolerance:        " << tol << std::endl;
+    std::cout << "#iterations:     " << BiCGSTAB.iterations() << std::endl;
+    std::cout << "relative residual: " << BiCGSTAB.error()      << std::endl << std::endl;
 
     // Ex 13:
-    std::cout << "Exercise 13: " << std::endl;
-    Eigen::VectorXd y = result2.solution; 
+    std::cout << "Exercise 13: " << std::endl; 
     Eigen::VectorXd y_clamped = utilities::clamp_image(y, 0, 255); //clamp the solution vector to ensure pixel values are within the valid range [0, 255]
     Eigen::MatrixXd y_image = utilities::convert_vector_to_matrix(y_clamped, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(y_image, "y.png");
