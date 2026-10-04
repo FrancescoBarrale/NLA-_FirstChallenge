@@ -10,7 +10,7 @@
 #include <random>
 #include <algorithm>
 
-
+// Function declarations
 namespace utilities
 {
     Eigen::MatrixXd get_matrix_from_file(const std::string& filename);

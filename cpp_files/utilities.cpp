@@ -1,11 +1,23 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
+
 #include "utilities.hpp"
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
+
 #include <filesystem>
 
-
+// Function definitions
 namespace utilities
 {
+    // Function to read an image file and return it as an Eigen matrix
     Eigen::MatrixXd get_matrix_from_file(const std::string& filename)
     {
         int width;
@@ -40,6 +52,7 @@ namespace utilities
         return matrix;
     }
 
+    // Function to add noise to an Eigen matrix
     Eigen::MatrixXd add_noise_to_matrix(const Eigen::MatrixXd& matrix, int noise_level)
     {
         static std::random_device seed;
@@ -51,6 +64,7 @@ namespace utilities
         {
             for (int j = 0; j < noisy_matrix.cols(); ++j)
             {   
+                // Add noise to the current element, keeping the value within the range [0, 255]
                 int noisy_value = noisy_matrix(i, j) + distribution(generator);
                 noisy_matrix(i, j) = std::clamp(noisy_value, 0, 255);
             }
@@ -58,6 +72,7 @@ namespace utilities
         return noisy_matrix;
     }
 
+    // Function to save an Eigen matrix as a PNG image
     void get_png_image_from_matrix(const Eigen::MatrixXd& matrix, const std::string& filename)
     {
         int width = matrix.cols();
@@ -72,6 +87,7 @@ namespace utilities
             }
         }
 
+        // Create the output directory if it doesn't exist
         const std::filesystem::path output_directory = "png_files";
         std::filesystem::create_directories(output_directory);
         const std::filesystem::path output_path = output_directory / filename;
@@ -84,6 +100,7 @@ namespace utilities
         delete[] image;
     }
 
+    // Function to convert an Eigen matrix to a vector
     Eigen::VectorXd convert_matrix_to_vector(const Eigen::MatrixXd& matrix)
     {
         Eigen::VectorXd vector(matrix.size());
@@ -97,6 +114,7 @@ namespace utilities
         return vector;
     }
 
+    // Function to convert a vector back to an Eigen matrix
     Eigen::MatrixXd convert_vector_to_matrix(const Eigen::VectorXd& vector, int rows, int cols)
     {
         if (vector.size() != rows * cols)
@@ -116,6 +134,7 @@ namespace utilities
         return matrix;
     }
 
+    // Function to build a convolution operator, given the dimensions of the image and the convolution kernel H
     Eigen::SparseMatrix<double> buildAconvolutionoperator(int n, int m, Eigen::MatrixXd H)
     {
         if (H.rows() != H.cols())
@@ -130,30 +149,34 @@ namespace utilities
         int l=H.rows();
         tripletList.reserve(n * m * l * l);
 
+        // Loop over each pixel in the image
         for (int i = 0; i < n ; ++i)
         {
             for (int j = 0; j< m; ++j)
             {
+                // Loop over each element in the convolution kernel H
                 for (int h = 0; h < l; ++h)
                 {   
                     for (int k = 0; k < l; ++k)
                     {
-                        int row_H = i + h - l/2;
-                        int col_H = j + k - l/2;
-                        if (row_H >= 0 && row_H < n &&
-                            col_H >= 0 && col_H < m &&
-                            H(h, k) != 0.0){
-
-                            tripletList.push_back(Eigen::Triplet<double>(row_H*m + col_H, i*m + j, H(h, k)));
+                        // Calculating the corresponding pixel in the image for the current kernel element
+                        int row = i + h - l/2;
+                        int col = j + k - l/2;
+                        // Check if the calculated pixel is within the bounds of the image and if the kernel element is non-zero
+                        if (row >= 0 && row < n && col >= 0 && col < m && H(h, k) != 0.0){
+                            // Add the non-zero element to the triplet list. 
+                            tripletList.push_back(Eigen::Triplet<double>(row*m + col, i*m + j, H(h, k)));
                         }
                     }
                 }
             }
         }
+        // Set the triplet list to the sparse matrix A
         A.setFromTriplets(tripletList.begin(), tripletList.end());
         return A;
     }
 
+    // Function to clamp the values of an Eigen vector within a specified range [min_value, max_value]
     Eigen::VectorXd clamp_image(Eigen::VectorXd& image_vector, int min_value, int max_value)
     {
         Eigen::VectorXd clamped_vector = image_vector;
@@ -164,6 +187,7 @@ namespace utilities
         return clamped_vector;
     }
 
+    // Function to check if a sparse matrix is symmetric
     bool is_symmetric(const Eigen::SparseMatrix<double>& m)
     {
         Eigen::SparseMatrix<double> m_t = m.transpose();
