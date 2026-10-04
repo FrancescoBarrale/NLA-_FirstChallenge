@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
     // Ex 4:
     std::cout << "Exercise 4: " << std::endl;
-    Eigen::MatrixXd Hav1(3, 3);
+    Eigen::MatrixXd Hav1(3, 3); //avarage smoothing filter
     Hav1 << 1./12., 1./12., 1./12.,
          1./12., 4./12., 1./12.,
          1./12., 1./12., 1./12.;
@@ -43,14 +43,15 @@ int main(int argc, char** argv) {
 
     // Ex 5:
     std::cout << "Exercise 5: " << std::endl;
-    Eigen::VectorXd Blurred_noisy_image = A1 * w;
+    Eigen::VectorXd Blurred_noisy_image = A1 * w; // Apply the convolution operator A1 to the noisy image vector w
+    //is not necessary to clamp the image because Hav1 sum to 1 and there is no negative values 
     Eigen::MatrixXd blurred_noisy_image_matrix = utilities::convert_vector_to_matrix(Blurred_noisy_image, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(blurred_noisy_image_matrix, "blurred_noisy_deer.png");
     std::cout << "Saved blurred noisy image as 'blurred_noisy_deer.png'." << std::endl << std::endl;
 
     // Ex 6:
     std::cout << "Exercise 6: " << std::endl;
-    Eigen::MatrixXd Hsh1(3, 3);
+    Eigen::MatrixXd Hsh1(3, 3); //sharpening filter
     Hsh1 << 0, -3, 0,
          -1, 9, -3,
          0, -1, 0;
@@ -65,7 +66,7 @@ int main(int argc, char** argv) {
 
     // Ex 7:
     std::cout << "Exercise 7: " << std::endl;
-    Eigen::VectorXd sharpened_image = A2 * v;
+    Eigen::VectorXd sharpened_image = A2 * v; // Apply the convolution operator A2 to the original image vector v
     sharpened_image = utilities::clamp_image(sharpened_image, 0, 255); // Clamp the sharpened image to ensure pixel values are within the valid range [0, 255]
     Eigen::MatrixXd sharpened_image_matrix = utilities::convert_vector_to_matrix(sharpened_image, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(sharpened_image_matrix, "sharpened_deer.png");
@@ -75,6 +76,7 @@ int main(int argc, char** argv) {
     std::cout << "Exercise 8: " << std::endl; 
     Eigen::saveMarket(A2, "A2.mtx");
     Eigen::saveMarketVector(w, "w.mtx");
+    // this passage was not necessary because of how we implemented the lis_solver, we still did it cause it was part of the exercise
     constexpr double tolerance = 1.0e-12;
 
     // Solve the linear system A2 * x = w using the lis_solver::solve function, that we introduced in the lis_solver.hpp file.
@@ -86,6 +88,8 @@ int main(int argc, char** argv) {
     std::cout << "Iterations of A2x = w: " << result.iterations << std::endl;
     std::cout << "Residual of A2x = w: " << result.residual << std::endl << std::endl;
 
+    lis_finalize();
+
     // Ex 9:
     std::cout << "Exercise 9: " << std::endl;
     Eigen::VectorXd x = result.solution;
@@ -96,7 +100,7 @@ int main(int argc, char** argv) {
 
     // Ex 10:
     std::cout << "Exercise 10: " << std::endl;
-    Eigen::MatrixXd Hed2(3, 3);
+    Eigen::MatrixXd Hed2(3, 3); //Sobel filter for edge detection
     Hed2 << -1. ,0.,1.,
             -2. ,0.,2.,
             -1. ,0.,1.;
@@ -108,8 +112,6 @@ int main(int argc, char** argv) {
     } else {
         std::cout << "A3 is not symmetric." << std::endl << std::endl;
     }
-
-    lis_finalize();
 
     // Ex 11:
     std::cout << "Exercise 11: " << std::endl;
@@ -123,9 +125,9 @@ int main(int argc, char** argv) {
     std::cout << "Exercise 12: " << std::endl;
     const Eigen::Index system_size = image.rows() * image.cols();
     Eigen::SparseMatrix<double> identity(system_size, system_size);
-    identity.setIdentity();
+    identity.setIdentity(); //doing directy the sum without these two passeges resulted in nan bacause of the way set.Identity works
     Eigen::SparseMatrix<double> A_new = 4.0 * identity + A3;
-    A_new.makeCompressed();
+    A_new.makeCompressed(); //makes sure the resulting matrix is sparse
 
     double tol = 1.e-10;                 // Convergence tolerance
     int maxit = 1000;           // Maximum iterations

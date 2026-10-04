@@ -198,10 +198,11 @@ namespace utilities
     // Function to check if a sparse matrix is symmetric
     bool is_symmetric(const Eigen::SparseMatrix<double>& m)
     {
-        Eigen::SparseMatrix<double> m_t = m.transpose();
+        Eigen::SparseMatrix<double> m_t = m.transpose(); //this passage is necessary cause m.traspose() is row-major and m is column-major, so doing the difference directly resulted in a error
+        //by saving the traspose we ensure that both matrices are column-major
 
-    Eigen::SparseMatrix<double> diff = m_t - m;
+        Eigen::SparseMatrix<double> diff = m_t - m;
     
-    return diff.norm() < 1e-12;
+        return diff.norm() < 1e-12;
     }
 }
