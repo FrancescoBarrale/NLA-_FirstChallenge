@@ -11,6 +11,7 @@
 
 namespace lis_solver
 {
+    //result struct
     struct Result
     {
         Eigen::VectorXd solution;
@@ -34,10 +35,12 @@ namespace lis_solver
         const Eigen::VectorXd& b_eigen,
         double tolerance
     ) {
+        //Check that the matrix is square
         if (A_eigen.rows() != A_eigen.cols()) {
             throw std::invalid_argument("A must be a square matrix.");
         }
 
+        //Compatibility matrix vector check
         if (A_eigen.rows() != b_eigen.size()) {
             throw std::invalid_argument(
                 "The dimensions of A and b do not match."
@@ -61,6 +64,7 @@ namespace lis_solver
             "lis_matrix_set_size"
         );
 
+        // Fill the LIS matrix with values from the Eigen sparse matrix
         for (int col = 0; col < A_eigen.outerSize(); ++col) {
             for (Eigen::SparseMatrix<double>::InnerIterator it(A_eigen, col);
                  it;
@@ -98,6 +102,7 @@ namespace lis_solver
             "lis_vector_set_size(b)"
         );
 
+        // Fill the LIS vector with values from the Eigen vector
         for (LIS_INT i = 0; i < n; ++i) {
             check_error(
                 lis_vector_set_value(
@@ -110,6 +115,7 @@ namespace lis_solver
             );
         }
 
+        // Create the solution vector x and set its size, set all values to zero as an initial guess
         check_error(
             lis_vector_create(LIS_COMM_WORLD, &x),
             "lis_vector_create(x)"
@@ -130,6 +136,7 @@ namespace lis_solver
             "lis_solver_create"
         );
 
+        // Set solver options: GMRES with ILU preconditioner and specified tolerance
         std::ostringstream options_stream;
         options_stream << "-i gmres -p ilu -ilu_fill 0 -tol "
                        << std::setprecision(17)
@@ -147,6 +154,7 @@ namespace lis_solver
             "lis_solver_set_optionC"
         );
 
+        // Solve the system Ax = b
         check_error(
             lis_solve(A, b, x, solver),
             "lis_solve"
@@ -155,6 +163,7 @@ namespace lis_solver
         LIS_INT iterations = 0;
         LIS_REAL residual = 0.0;
 
+        // Get the number of iterations and the residual norm
         check_error(
             lis_solver_get_iter(solver, &iterations),
             "lis_solver_get_iter"
@@ -165,6 +174,7 @@ namespace lis_solver
             "lis_solver_get_residualnorm"
         );
 
+        // Extract the solution from the LIS vector
         Eigen::VectorXd solution(n);
 
         for (LIS_INT i = 0; i < n; ++i) {
