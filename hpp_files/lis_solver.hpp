@@ -136,9 +136,9 @@ namespace lis_solver
             "lis_solver_create"
         );
 
-        // Set solver options: GMRES with ILU preconditioner and specified tolerance
+        // Set solver options: BICGSTAB with ILU preconditioner and specified tolerance
         std::ostringstream options_stream;
-        options_stream << "-i gmres -p ilu -ilu_fill 0 -tol "
+        options_stream << "-i bicgstab -p ilu -ilu_fill 0 -tol "
                        << std::setprecision(17)
                        << std::scientific
                        << tolerance;
