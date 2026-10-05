@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
 
     Eigen::SparseMatrix<double> A3 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hed2);
     std::cout << "Number of non zero elements of A3: " << A3.nonZeros() << std::endl;
-    A3.prune(1.0,1e-10);
+    A3.prune(1.0,1e-10); //remove elements with absolute value less than 1e-10
     A3.makeCompressed();
     std::cout << "Number of non zero elements of A3 after pruning: " << A3.nonZeros() << std::endl;
     if (utilities::is_symmetric(A3)) {
