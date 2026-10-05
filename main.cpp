@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
 
     Eigen::SparseMatrix<double> A1 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hav1);
     std::cout << "Number of non zero elements of A1: " << A1.nonZeros() << std::endl;
-    A1.prune(1.0,1e-10);
+    A1.prune(1.0,1e-15); //remove elements with absolute value less than 1e-15 to ensure that we are not counting almost 0 elements as non zero elements
     A1.makeCompressed();
     std::cout << "Number of non zero elements of A1 after pruning: " << A1.nonZeros() << std::endl << std::endl;
 
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
          0, -1, 0;
     Eigen::SparseMatrix<double> A2 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hsh1);
     std::cout << "Number of non zero elements of A2: " << A2.nonZeros() << std::endl;
-    A2.prune(1.0,1e-10);
+    A2.prune(1.0,1e-15);
     A2.makeCompressed();
     std::cout << "Number of non zero elements of A2 after pruning: " << A2.nonZeros() << std::endl;
 
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
 
     Eigen::SparseMatrix<double> A3 = utilities::buildAconvolutionoperator(image.rows(), image.cols(), Hed2);
     std::cout << "Number of non zero elements of A3: " << A3.nonZeros() << std::endl;
-    A3.prune(1.0,1e-10); //remove elements with absolute value less than 1e-10
+    A3.prune(1.0,1e-15); //remove elements with absolute value less than 1e-15
     A3.makeCompressed();
     std::cout << "Number of non zero elements of A3 after pruning: " << A3.nonZeros() << std::endl;
     if (utilities::is_symmetric(A3)) {
