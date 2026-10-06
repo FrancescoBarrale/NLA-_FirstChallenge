@@ -96,7 +96,5 @@ exist.
 
 ## Troubleshooting
 
-
 - **The input image cannot be loaded:** run `./main` from the project root,
   where `deer.jpg` is located.
-
