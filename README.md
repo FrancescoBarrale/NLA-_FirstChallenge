@@ -4,11 +4,19 @@ Implementation of the first Numerical Linear Algebra challenge. The project
 uses [Eigen](https://eigen.tuxfamily.org/) for dense and sparse linear algebra
 and [LIS](https://www.ssisc.org/lis/) for iterative linear-system solvers.
 
+## Github repository
+
+You can find this challenge on github on the following link:
+
+```link
+https://github.com/FrancescoBarrale/NLA-_FirstChallenge.git
+```
+
 ## Students
 
-- Francesco Barrale
-- Anna Adele Gusmeroli
-- Alessandra Mantovani
+- Francesco Barrale (10889288)
+- Anna Adele Gusmeroli (10837456)
+- Alessandra Mantovani (10809658)
 
 ## Overview
 
