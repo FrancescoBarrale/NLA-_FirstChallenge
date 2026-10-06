@@ -126,7 +126,6 @@ int main(int argc, char** argv) {
     // Ex 11:
     std::cout << "Exercise 11: " << std::endl;
     Eigen::VectorXd Edge_detection_image = A3 * v;
-    Edge_detection_image = Edge_detection_image.cwiseAbs();   // Ensure all pixel values are non-negative, to clamp the image better.
     Edge_detection_image = utilities::clamp_image(Edge_detection_image, 0, 255); // Clamp the edge detection image to ensure pixel values are within the valid range [0, 255]
     Eigen::MatrixXd Edge_detection_image_matrix = utilities::convert_vector_to_matrix(Edge_detection_image, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(Edge_detection_image_matrix, "Edge_detection_deer.png");
