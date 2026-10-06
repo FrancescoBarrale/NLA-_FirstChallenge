@@ -90,9 +90,10 @@ int main(int argc, char** argv) {
     // It was implemented using the LIS library. In this way we can run main.cpp directly without having to compile the LIS library separately using .mtx files.
     lis_solver::Result result = lis_solver::solve(A2, w, tolerance); //Since A2 is not symmetric, we can use the Bicgstab method with ILU preconditioner
 
-    std::cout << "Tolerance of A2x = w: " << tolerance << std::endl;
-    std::cout << "Iterations of A2x = w: " << result.iterations << std::endl;
-    std::cout << "Residual of A2x = w: " << result.residual << std::endl << std::endl;
+    std::cout << "Solved the linear system A2 * x = w using the bicgstab method with ILU preconditioner from the lis library." << std::endl;
+    std::cout << "Tolerance: " << tolerance << std::endl;
+    std::cout << "Iterations: " << result.iterations << std::endl;
+    std::cout << "Residual: " << result.residual << std::endl << std::endl;
 
     lis_finalize();
 
@@ -148,9 +149,9 @@ int main(int argc, char** argv) {
     BiCGSTAB.setTolerance(tol);
     BiCGSTAB.compute(A_new);
     Eigen::VectorXd y = BiCGSTAB.solve(w);
-    std::cout << "Eigen native BiCGSTAB (A3+4I)y=w" << std::endl;
-    std::cout << "Tolerance:        " << tol << std::endl;
-    std::cout << "#iterations:     " << BiCGSTAB.iterations() << std::endl;
+    std::cout << "Solved the linear system (4I + A3) * y = w using the BiCGSTAB method with diagonal preconditioning from the Eigen library." << std::endl;
+    std::cout << "Tolerance: " << tol << std::endl;
+    std::cout << "#iterations: " << BiCGSTAB.iterations() << std::endl;
     std::cout << "relative residual: " << BiCGSTAB.error()      << std::endl << std::endl;
 
     // Ex 13:
