@@ -55,8 +55,7 @@ namespace utilities
     // Function to add noise to an Eigen matrix
     Eigen::MatrixXd add_noise_to_matrix(const Eigen::MatrixXd& matrix, int noise_level)
     {
-        static std::random_device seed;
-        static std::mt19937 generator(seed());
+        static std::mt19937 generator(0); // Fixed seed for reproducibility
         std::uniform_int_distribution<int> distribution(-noise_level, noise_level);
         Eigen::MatrixXd noisy_matrix = matrix;
 

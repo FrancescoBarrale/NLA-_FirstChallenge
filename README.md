@@ -85,9 +85,10 @@ exist.
 .
 ├── main.cpp                 # Entry point and challenge exercises
 ├── cpp_files/
+│   ├── lis_solver.cpp       # LIS solver implementation
 │   └── utilities.cpp        # Image and sparse-matrix implementations
 ├── hpp_files/
-│   ├── lis_solver.hpp       # LIS solver wrapper
+│   ├── lis_solver.hpp       # LIS solver declarations
 │   ├── utilities.hpp        # Utility declarations
 │   ├── stb_image.h          # read image
 │   └── stb_image_write.h    # write image
