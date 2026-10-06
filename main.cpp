@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     std::cout << "Exercise 8: " << std::endl; 
     Eigen::saveMarket(A2, "A2.mtx");
     Eigen::saveMarketVector(w, "w.mtx");
-    // this passage was not necessary because of how we implemented the lis_solver, we still did it cause it was part of the exercise
+    // This passage was not necessary in our code because of how we implemented the lis_solver. We still did it because it was part of the exercise
     constexpr double tolerance = 1.0e-12;
 
     // Solve the linear system A2 * x = w using the lis_solver::solve function, that we introduced in the lis_solver.hpp file.
@@ -126,6 +126,7 @@ int main(int argc, char** argv) {
     // Ex 11:
     std::cout << "Exercise 11: " << std::endl;
     Eigen::VectorXd Edge_detection_image = A3 * v;
+    Edge_detection_image = Edge_detection_image.cwiseAbs();   // Ensure all pixel values are non-negative, to clamp the image better.
     Edge_detection_image = utilities::clamp_image(Edge_detection_image, 0, 255); // Clamp the edge detection image to ensure pixel values are within the valid range [0, 255]
     Eigen::MatrixXd Edge_detection_image_matrix = utilities::convert_vector_to_matrix(Edge_detection_image, image.rows(), image.cols());
     utilities::get_png_image_from_matrix(Edge_detection_image_matrix, "Edge_detection_deer.png");

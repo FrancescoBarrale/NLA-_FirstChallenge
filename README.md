@@ -70,7 +70,7 @@ The following image files are created in the folder `png_files/`:
 - `Edge_detection_deer.png` — Sobel edge-detection result;
 - `y.png` — image reconstructed with the Eigen solver.
 
-The sparse matrix and right-hand-side vector used by the LIS exercise are also
+The sparse matrix and right-hand-side vector (not required by this code) are also
 exported in Matrix Market format:
 
 - `A2.mtx`;
@@ -88,11 +88,16 @@ exist.
 │   └── utilities.cpp        # Image and sparse-matrix implementations
 ├── hpp_files/
 │   ├── lis_solver.hpp       # LIS solver wrapper
-│   └── utilities.hpp        # Utility declarations
+│   ├── utilities.hpp        # Utility declarations
+│   ├── stb_image.h          # read image
+│   └── stb_image_write.h    # write image
+
 ├── deer.jpg                 # Input image
 ├── Makefile
 └── png_files/               # Generated PNG images
 ```
+
+Files stb_image.h and stb_image_write.h, included int the hpp_files folder, are taken from the laboratories of the course.
 
 ## Troubleshooting
 
